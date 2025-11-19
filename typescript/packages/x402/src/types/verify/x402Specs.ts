@@ -113,7 +113,7 @@ export const PaymentPayloadSchema = z.object({
 });
 export type PaymentPayload = z.infer<typeof PaymentPayloadSchema>;
 export type UnsignedPaymentPayload = Omit<PaymentPayload, "payload"> & {
-  payload: Omit<ExactEvmPayload, "signature"> & { signature: undefined };
+  payload: Omit<ExactEvmPayload, "signature"> & { signature: undefined; kyc?: string };
 };
 
 // x402 Resource Server Response

@@ -31,6 +31,7 @@ import {
  * @param maxValue - The maximum allowed payment amount in base units (defaults to 0.1 USDC)
  * @param paymentRequirementsSelector - A function that selects the payment requirements from the response
  * @param config - Optional configuration for X402 operations (e.g., custom RPC URLs)
+ * @param kyc - Optional proof of identify
  * @returns A wrapped fetch function that handles 402 responses automatically
  *
  * @example
@@ -58,6 +59,7 @@ export function wrapFetchWithPayment(
   maxValue: bigint = BigInt(0.1 * 10 ** 6), // Default to 0.10 USDC
   paymentRequirementsSelector: PaymentRequirementsSelector = selectPaymentRequirements,
   config?: X402Config,
+  kyc?: string,
 ) {
   return async (input: RequestInfo, init?: RequestInit) => {
     const response = await fetch(input, init);
@@ -95,6 +97,7 @@ export function wrapFetchWithPayment(
       x402Version,
       selectedPaymentRequirements,
       config,
+      selectedPaymentRequirements.extra?.kyc ? kyc : undefined,
     );
 
     if (!init) {
