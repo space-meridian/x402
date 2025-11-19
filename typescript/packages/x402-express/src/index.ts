@@ -269,6 +269,17 @@ export function paymentMiddleware(
       return;
     }
 
+    if (selectedPaymentRequirements.extra?.kyc) {
+      if (decodedPayment.payload.kyc !== "KYC") {
+        res.status(402).json({
+          x402Version,
+          error: "Invalid proof of identity",
+          accepts: toJsonSafe(paymentRequirements),
+        });
+        return;
+      }
+    }
+
     try {
       const response = await verify(decodedPayment, selectedPaymentRequirements);
       if (!response.isValid) {
