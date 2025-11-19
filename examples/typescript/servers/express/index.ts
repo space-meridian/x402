@@ -23,6 +23,9 @@ app.use(
         // network: "base" // uncomment for Base mainnet
         // network: "solana" // uncomment for Solana mainnet
         network: "base-sepolia",
+        config: {
+          kyc: true,
+        },
       },
       "/premium/*": {
         // Define atomic amounts in any EIP-3009 token

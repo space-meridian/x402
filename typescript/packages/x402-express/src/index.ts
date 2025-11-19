@@ -105,6 +105,7 @@ export function paymentMiddleware(
       customPaywallHtml,
       resource,
       discoverable,
+      kyc,
     } = config;
 
     const atomicAmountForAsset = processPriceToAtomicAmount(price, network);
@@ -141,7 +142,10 @@ export function paymentMiddleware(
           },
           output: outputSchema,
         },
-        extra: (asset as ERC20TokenAmount["asset"]).eip712,
+        extra: {
+          ...(asset as ERC20TokenAmount["asset"]).eip712,
+          kyc: kyc ?? false,
+        },
       });
     }
 
@@ -186,6 +190,7 @@ export function paymentMiddleware(
         },
         extra: {
           feePayer,
+          kyc: kyc ?? false,
         },
       });
     } else {
