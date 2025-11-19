@@ -95,12 +95,14 @@ export type ExactEvmPayloadAuthorization = z.infer<typeof ExactEvmPayloadAuthori
 export const ExactEvmPayloadSchema = z.object({
   signature: z.string().regex(EvmSignatureRegex),
   authorization: ExactEvmPayloadAuthorizationSchema,
+  kyc: z.string().optional(),
 });
 export type ExactEvmPayload = z.infer<typeof ExactEvmPayloadSchema>;
 
 // x402ExactSvmPayload
 export const ExactSvmPayloadSchema = z.object({
   transaction: z.string().regex(Base64EncodedRegex),
+  kyc: z.string().optional(),
 });
 export type ExactSvmPayload = z.infer<typeof ExactSvmPayloadSchema>;
 
