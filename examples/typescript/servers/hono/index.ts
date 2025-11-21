@@ -25,6 +25,9 @@ app.use(
       "/weather": {
         price: "$0.001",
         network,
+        config: {
+          kyc: true,
+        },
       },
     },
     {
