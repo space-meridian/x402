@@ -15,8 +15,16 @@ function App() {
 
   // Update API client when wallet changes
   useEffect(() => {
-    updateApiClient(walletClient);
+    asyncUpdateApiClient();
   }, [walletClient]);
+
+  const asyncUpdateApiClient = async () => {
+    try {
+      await updateApiClient(walletClient);
+    } catch (error) {
+      console.error('Failed to update api client', error);
+    }
+  }
 
   // Check server health on mount
   useEffect(() => {
