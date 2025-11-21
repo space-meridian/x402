@@ -31,6 +31,9 @@ async function main(): Promise<void> {
       baseURL,
     }),
     signer,
+    undefined,
+    undefined,
+    "KYC",
   );
 
   const response = await api.get(endpointPath);
