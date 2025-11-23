@@ -31,9 +31,7 @@ export async function updateApiClient(walletClient: WalletClient | null) {
     });
     console.log('got query builder')
     const { url, onResult } = queryBuilder.gte("age", 18).done();
-    console.log({ url })
-    const canvas = await qrcode.toCanvas(url);
-    document.body.appendChild(canvas);
+    await qrcode.toCanvas(document.getElementById('canvas'), url);
     onResult(({ verified, result }) => {
       console.log('on result')
       if (verified) {
