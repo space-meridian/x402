@@ -1,4 +1,4 @@
-import { useFacilitator } from "x402/verify";
+import { useFacilitator } from "@space-meridian/x402/verify";
 import { facilitator } from "@coinbase/x402";
 
 const { list } = useFacilitator(facilitator);

@@ -1,8 +1,8 @@
 import { Context } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { exact } from "x402/schemes";
-import { findMatchingRoute, findMatchingPaymentRequirements } from "x402/shared";
-import { getPaywallHtml } from "x402/paywall";
+import { exact } from "@space-meridian/x402/schemes";
+import { findMatchingRoute, findMatchingPaymentRequirements } from "@space-meridian/x402/shared";
+import { getPaywallHtml } from "@space-meridian/x402/paywall";
 import {
   FacilitatorConfig,
   Network,
@@ -10,8 +10,8 @@ import {
   PaymentPayload,
   RouteConfig,
   RoutesConfig,
-} from "x402/types";
-import { useFacilitator } from "x402/verify";
+} from "@space-meridian/x402/types";
+import { useFacilitator } from "@space-meridian/x402/verify";
 import { paymentMiddleware } from "./index";
 import { Address as SolanaAddress } from "@solana/kit";
 
