@@ -124,6 +124,7 @@ export function paymentMiddleware(
       resource,
       errorMessages,
       discoverable,
+      kyc,
     } = config;
 
     const atomicAmountForAsset = processPriceToAtomicAmount(price, network);
@@ -160,7 +161,10 @@ export function paymentMiddleware(
           },
           output: outputSchema,
         },
-        extra: (asset as ERC20TokenAmount["asset"]).eip712,
+        extra: {
+          ...(asset as ERC20TokenAmount["asset"]).eip712,
+          kyc: kyc ?? false,
+        },
       });
     }
     // svm networks
@@ -205,6 +209,7 @@ export function paymentMiddleware(
         },
         extra: {
           feePayer,
+          kyc: kyc ?? false,
         },
       });
     } else {
@@ -293,6 +298,19 @@ export function paymentMiddleware(
         }),
         { status: 402, headers: { "Content-Type": "application/json" } },
       );
+    }
+
+    if (selectedPaymentRequirements.extra?.kyc) {
+      if (decodedPayment.payload.kyc !== "KYC") {
+        return new NextResponse(
+          JSON.stringify({
+            x402Version,
+            error: "Invalid proof of identity",
+            accepts: toJsonSafe(paymentRequirements),
+          }),
+          { status: 402, headers: { "Content-Type": "application/json" } },
+        );
+      }
     }
 
     const verification = await verify(decodedPayment, selectedPaymentRequirements);
