@@ -17,7 +17,7 @@
     "tsx": "^4.20.3",
     "viem": "^2.0.0",
     "@space-meridian/x402": "workspace:*",
-    "x402-axios": "workspace:*",
+    "@space-meridian/x402-axios": "workspace:*",
     "@space-meridian/x402-express": "workspace:*"
   },
   "devDependencies": {
