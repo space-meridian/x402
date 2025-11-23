@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import express from "express";
 import { paymentMiddleware, Resource, type SolanaAddress } from "@space-meridian/x402-express";
+import cors from "cors";
 config();
 
 const facilitatorUrl = process.env.FACILITATOR_URL as Resource;
@@ -12,6 +13,8 @@ if (!facilitatorUrl || !payTo) {
 }
 
 const app = express();
+
+app.use(cors());
 
 app.use(
   paymentMiddleware(
