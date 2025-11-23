@@ -24,6 +24,8 @@ import {
   SupportedSVMNetworks,
 } from "@space-meridian/x402/types";
 import { useFacilitator } from "@space-meridian/x402/verify";
+import { QueryResult, ZKPassport } from "@zkpassport/sdk";
+import { ProofResult } from "@zkpassport/sdk";
 
 /**
  * Creates a payment middleware factory for Express
@@ -270,7 +272,26 @@ export function paymentMiddleware(
     }
 
     if (selectedPaymentRequirements.extra?.kyc) {
-      if (decodedPayment.payload.kyc !== "KYC") {
+      const {
+        queryResult,
+        proofs,
+      }: {
+        queryResult: QueryResult;
+        proofs: ProofResult[];
+      } = JSON.parse(decodedPayment.payload.kyc || "{}");
+
+      const zkpassport = new ZKPassport("localhost");
+
+      const { verified, uniqueIdentifier } = await zkpassport.verify({
+        proofs,
+        queryResult,
+        devMode: true,
+      });
+
+      console.log("Verified", verified);
+      console.log("Unique identifier", uniqueIdentifier);
+
+      if (!verified) {
         res.status(402).json({
           x402Version,
           error: "Invalid proof of identity",

@@ -24,7 +24,7 @@
     "wagmi": "^2.15.6",
     "@space-meridian/x402": "workspace:*",
     "x402-legacy": "npm:x402@0.1.2",
-    "x402-next": "workspace:*"
+    "@space-meridian/x402-next": "workspace:*"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
