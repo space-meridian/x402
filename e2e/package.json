@@ -18,7 +18,7 @@
     "viem": "^2.0.0",
     "@space-meridian/x402": "workspace:*",
     "x402-axios": "workspace:*",
-    "x402-express": "workspace:*"
+    "@space-meridian/x402-express": "workspace:*"
   },
   "devDependencies": {
     "@types/express": "^4.17.0",
