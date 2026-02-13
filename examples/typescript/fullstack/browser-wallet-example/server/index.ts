@@ -46,11 +46,17 @@ app.use(
       "/api/pay/session": {
         price: "$1.00",
         network,
+        config: {
+          kyc: true,
+        },
       },
       // One-time access/payment
       "/api/pay/onetime": {
         price: "$0.10",
         network,
+        config: {
+          kyc: true,
+        },
       },
     },
     {

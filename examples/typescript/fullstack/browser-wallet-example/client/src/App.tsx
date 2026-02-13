@@ -15,8 +15,16 @@ function App() {
 
   // Update API client when wallet changes
   useEffect(() => {
-    updateApiClient(walletClient);
+    asyncUpdateApiClient();
   }, [walletClient]);
+
+  const asyncUpdateApiClient = async () => {
+    try {
+      await updateApiClient(walletClient);
+    } catch (error) {
+      console.error('Failed to update api client', error);
+    }
+  }
 
   // Check server health on mount
   useEffect(() => {
@@ -130,8 +138,13 @@ function App() {
           <WalletConnect />
         </section>
 
+        <section className="wallet-section">
+          <h2>2. Proof Of Identify</h2>
+          <canvas id="canvas"></canvas>
+        </section>
+
         <section className="payment-section">
-          <h2>2. Payment Options</h2>
+          <h2>3. Payment Options</h2>
           <div className="payment-grid">
             {paymentOptions.map((option) => (
               <div key={option.endpoint} className="payment-card">
@@ -164,7 +177,7 @@ function App() {
         </section>
 
         <section className="validation-section">
-          <h2>3. Validate Session</h2>
+          <h2>4. Validate Session</h2>
           <div className="session-validator">
             <input
               type="text"

@@ -10,9 +10,11 @@
     "lint:check": "eslint . --ext .ts"
   },
   "dependencies": {
+    "@space-meridian/x402-express": "workspace:*",
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.18.2",
-    "x402-express": "workspace:*"
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",

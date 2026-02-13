@@ -10,12 +10,12 @@ import {
   Network,
   evm,
   X402Config,
-} from "x402/types";
+} from "@space-meridian/x402/types";
 import {
   createPaymentHeader,
   PaymentRequirementsSelector,
   selectPaymentRequirements,
-} from "x402/client";
+} from "@space-meridian/x402/client";
 
 /**
  * Enables the payment of APIs using the x402 payment protocol.
@@ -30,6 +30,7 @@ import {
  * @param walletClient - A wallet client that can sign transactions and create payment headers
  * @param paymentRequirementsSelector - A function that selects the payment requirements from the response
  * @param config - Optional configuration for X402 operations (e.g., custom RPC URLs)
+ * @param kyc - Optional proof of identity
  * @returns The modified Axios instance with the payment interceptor
  *
  * @example
@@ -56,6 +57,7 @@ export function withPaymentInterceptor(
   walletClient: Signer | MultiNetworkSigner,
   paymentRequirementsSelector: PaymentRequirementsSelector = selectPaymentRequirements,
   config?: X402Config,
+  kyc?: string,
 ) {
   axiosClient.interceptors.response.use(
     response => response,
@@ -94,6 +96,7 @@ export function withPaymentInterceptor(
           x402Version,
           selectedPaymentRequirements,
           config,
+          selectedPaymentRequirements.extra?.kyc ? kyc : undefined,
         );
 
         (originalConfig as { __is402Retry?: boolean }).__is402Retry = true;
@@ -112,7 +115,7 @@ export function withPaymentInterceptor(
   return axiosClient;
 }
 
-export { decodeXPaymentResponse } from "x402/shared";
-export { createSigner, type Signer, type MultiNetworkSigner, type X402Config } from "x402/types";
-export { type PaymentRequirementsSelector } from "x402/client";
+export { decodeXPaymentResponse } from "@space-meridian/x402/shared";
+export { createSigner, type Signer, type MultiNetworkSigner, type X402Config } from "@space-meridian/x402/types";
+export { type PaymentRequirementsSelector } from "@space-meridian/x402/client";
 export type { Hex } from "viem";

@@ -8,12 +8,12 @@ import {
   isSvmSignerWallet,
   Network,
   X402Config,
-} from "x402/types";
+} from "@space-meridian/x402/types";
 import {
   createPaymentHeader,
   PaymentRequirementsSelector,
   selectPaymentRequirements,
-} from "x402/client";
+} from "@space-meridian/x402/client";
 
 /**
  * Enables the payment of APIs using the x402 payment protocol.
@@ -31,6 +31,7 @@ import {
  * @param maxValue - The maximum allowed payment amount in base units (defaults to 0.1 USDC)
  * @param paymentRequirementsSelector - A function that selects the payment requirements from the response
  * @param config - Optional configuration for X402 operations (e.g., custom RPC URLs)
+ * @param kyc - Optional proof of identify
  * @returns A wrapped fetch function that handles 402 responses automatically
  *
  * @example
@@ -58,6 +59,7 @@ export function wrapFetchWithPayment(
   maxValue: bigint = BigInt(0.1 * 10 ** 6), // Default to 0.10 USDC
   paymentRequirementsSelector: PaymentRequirementsSelector = selectPaymentRequirements,
   config?: X402Config,
+  kyc?: string,
 ) {
   return async (input: RequestInfo, init?: RequestInit) => {
     const response = await fetch(input, init);
@@ -95,6 +97,7 @@ export function wrapFetchWithPayment(
       x402Version,
       selectedPaymentRequirements,
       config,
+      selectedPaymentRequirements.extra?.kyc ? kyc : undefined,
     );
 
     if (!init) {
@@ -120,7 +123,7 @@ export function wrapFetchWithPayment(
   };
 }
 
-export { decodeXPaymentResponse } from "x402/shared";
-export { createSigner, type Signer, type MultiNetworkSigner, type X402Config } from "x402/types";
-export { type PaymentRequirementsSelector } from "x402/client";
+export { decodeXPaymentResponse } from "@space-meridian/x402/shared";
+export { createSigner, type Signer, type MultiNetworkSigner, type X402Config } from "@space-meridian/x402/types";
+export { type PaymentRequirementsSelector } from "@space-meridian/x402/client";
 export type { Hex } from "viem";

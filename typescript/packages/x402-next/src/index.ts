@@ -2,15 +2,15 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { Address, getAddress } from "viem";
 import type { Address as SolanaAddress } from "@solana/kit";
-import { exact } from "x402/schemes";
+import { exact } from "@space-meridian/x402/schemes";
 import {
   computeRoutePatterns,
   findMatchingPaymentRequirements,
   findMatchingRoute,
   processPriceToAtomicAmount,
   toJsonSafe,
-} from "x402/shared";
-import { getPaywallHtml } from "x402/paywall";
+} from "@space-meridian/x402/shared";
+import { getPaywallHtml } from "@space-meridian/x402/paywall";
 import {
   FacilitatorConfig,
   moneySchema,
@@ -22,9 +22,9 @@ import {
   ERC20TokenAmount,
   SupportedEVMNetworks,
   SupportedSVMNetworks,
-} from "x402/types";
-import { useFacilitator } from "x402/verify";
-import { safeBase64Encode } from "x402/shared";
+} from "@space-meridian/x402/types";
+import { useFacilitator } from "@space-meridian/x402/verify";
+import { safeBase64Encode } from "@space-meridian/x402/shared";
 
 import { POST } from "./api/session-token";
 
@@ -124,6 +124,7 @@ export function paymentMiddleware(
       resource,
       errorMessages,
       discoverable,
+      kyc,
     } = config;
 
     const atomicAmountForAsset = processPriceToAtomicAmount(price, network);
@@ -160,7 +161,10 @@ export function paymentMiddleware(
           },
           output: outputSchema,
         },
-        extra: (asset as ERC20TokenAmount["asset"]).eip712,
+        extra: {
+          ...(asset as ERC20TokenAmount["asset"]).eip712,
+          kyc: kyc ?? false,
+        },
       });
     }
     // svm networks
@@ -205,6 +209,7 @@ export function paymentMiddleware(
         },
         extra: {
           feePayer,
+          kyc: kyc ?? false,
         },
       });
     } else {
@@ -295,6 +300,19 @@ export function paymentMiddleware(
       );
     }
 
+    if (selectedPaymentRequirements.extra?.kyc) {
+      if (decodedPayment.payload.kyc !== "KYC") {
+        return new NextResponse(
+          JSON.stringify({
+            x402Version,
+            error: "Invalid proof of identity",
+            accepts: toJsonSafe(paymentRequirements),
+          }),
+          { status: 402, headers: { "Content-Type": "application/json" } },
+        );
+      }
+    }
+
     const verification = await verify(decodedPayment, selectedPaymentRequirements);
 
     if (!verification.isValid) {
@@ -358,7 +376,7 @@ export type {
   Resource,
   RouteConfig,
   RoutesConfig,
-} from "x402/types";
+} from "@space-meridian/x402/types";
 export type { Address as SolanaAddress } from "@solana/kit";
 
 // Export session token API handlers for Onramp

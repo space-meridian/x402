@@ -20,8 +20,8 @@
     "hono": "^4.7.7",
     "llamaindex": "^0.10.2",
     "viem": "^2.28.3",
-    "x402": "workspace:*",
-    "x402-axios": "workspace:*",
+    "@space-meridian/x402": "workspace:*",
+    "@space-meridian/x402-axios": "workspace:*",
     "x402-hono": "workspace:*",
     "zod": "^3.24.3"
   },

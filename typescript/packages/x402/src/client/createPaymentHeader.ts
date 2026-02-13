@@ -11,6 +11,7 @@ import { X402Config } from "../types/config";
  * @param x402Version - The version of the X402 protocol to use
  * @param paymentRequirements - The payment requirements containing scheme and network information
  * @param config - Optional configuration for X402 operations (e.g., custom RPC URLs)
+ * @param kyc - Optional proof of identity
  * @returns A promise that resolves to the created payment header string
  */
 export async function createPaymentHeader(
@@ -18,6 +19,7 @@ export async function createPaymentHeader(
   x402Version: number,
   paymentRequirements: PaymentRequirements,
   config?: X402Config,
+  kyc?: string,
 ): Promise<string> {
   // exact scheme
   if (paymentRequirements.scheme === "exact") {
@@ -33,6 +35,7 @@ export async function createPaymentHeader(
         evmClient,
         x402Version,
         paymentRequirements,
+        kyc,
       );
     }
     // svm

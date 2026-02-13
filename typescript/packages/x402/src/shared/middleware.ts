@@ -189,7 +189,10 @@ export function findMatchingPaymentRequirements(
   payment: PaymentPayload,
 ) {
   return paymentRequirements.find(
-    value => value.scheme === payment.scheme && value.network === payment.network,
+    value =>
+      value.scheme === payment.scheme &&
+      value.network === payment.network &&
+      (!value.extra?.kyc || payment.payload.kyc),
   );
 }
 

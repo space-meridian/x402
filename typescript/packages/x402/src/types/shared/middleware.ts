@@ -33,6 +33,7 @@ export type PaymentMiddlewareConfig = {
     verificationFailed?: string;
     settlementFailed?: string;
   };
+  kyc?: boolean;
 };
 
 export interface ERC20TokenAmount {

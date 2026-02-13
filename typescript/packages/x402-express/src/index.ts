@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { Address, getAddress } from "viem";
 import { Address as SolanaAddress } from "@solana/kit";
-import { exact } from "x402/schemes";
+import { exact } from "@space-meridian/x402/schemes";
 import {
   computeRoutePatterns,
   findMatchingPaymentRequirements,
   findMatchingRoute,
   processPriceToAtomicAmount,
   toJsonSafe,
-} from "x402/shared";
-import { getPaywallHtml } from "x402/paywall";
+} from "@space-meridian/x402/shared";
+import { getPaywallHtml } from "@space-meridian/x402/paywall";
 import {
   FacilitatorConfig,
   ERC20TokenAmount,
@@ -22,8 +22,10 @@ import {
   settleResponseHeader,
   SupportedEVMNetworks,
   SupportedSVMNetworks,
-} from "x402/types";
-import { useFacilitator } from "x402/verify";
+} from "@space-meridian/x402/types";
+import { useFacilitator } from "@space-meridian/x402/verify";
+import { QueryResult, ZKPassport } from "@zkpassport/sdk";
+import { ProofResult } from "@zkpassport/sdk";
 
 /**
  * Creates a payment middleware factory for Express
@@ -105,6 +107,7 @@ export function paymentMiddleware(
       customPaywallHtml,
       resource,
       discoverable,
+      kyc,
     } = config;
 
     const atomicAmountForAsset = processPriceToAtomicAmount(price, network);
@@ -141,7 +144,10 @@ export function paymentMiddleware(
           },
           output: outputSchema,
         },
-        extra: (asset as ERC20TokenAmount["asset"]).eip712,
+        extra: {
+          ...(asset as ERC20TokenAmount["asset"]).eip712,
+          kyc: kyc ?? false,
+        },
       });
     }
 
@@ -186,6 +192,7 @@ export function paymentMiddleware(
         },
         extra: {
           feePayer,
+          kyc: kyc ?? false,
         },
       });
     } else {
@@ -262,6 +269,36 @@ export function paymentMiddleware(
         accepts: toJsonSafe(paymentRequirements),
       });
       return;
+    }
+
+    if (selectedPaymentRequirements.extra?.kyc) {
+      const {
+        queryResult,
+        proofs,
+      }: {
+        queryResult: QueryResult;
+        proofs: ProofResult[];
+      } = JSON.parse(decodedPayment.payload.kyc || "{}");
+
+      const zkpassport = new ZKPassport("localhost");
+
+      const { verified, uniqueIdentifier } = await zkpassport.verify({
+        proofs,
+        queryResult,
+        devMode: true,
+      });
+
+      console.log("Verified", verified);
+      console.log("Unique identifier", uniqueIdentifier);
+
+      if (!verified) {
+        res.status(402).json({
+          x402Version,
+          error: "Invalid proof of identity",
+          accepts: toJsonSafe(paymentRequirements),
+        });
+        return;
+      }
     }
 
     try {
@@ -353,5 +390,5 @@ export type {
   Resource,
   RouteConfig,
   RoutesConfig,
-} from "x402/types";
+} from "@space-meridian/x402/types";
 export type { Address as SolanaAddress } from "@solana/kit";

@@ -24,7 +24,14 @@ if (!baseURL || !privateKey || !endpointPath) {
 async function main(): Promise<void> {
   // const signer = await createSigner("solana-devnet", privateKey); // uncomment for solana
   const signer = await createSigner("base-sepolia", privateKey);
-  const fetchWithPayment = wrapFetchWithPayment(fetch, signer);
+  const fetchWithPayment = wrapFetchWithPayment(
+    fetch,
+    signer,
+    undefined,
+    undefined,
+    undefined,
+    "KYC",
+  );
 
   const response = await fetchWithPayment(url, { method: "GET" });
   const body = await response.json();

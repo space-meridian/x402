@@ -12,7 +12,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "viem": "^2.21.26",
-    "x402": "workspace:*",
+    "@space-meridian/x402": "workspace:*",
     "@coinbase/x402": "workspace:*"
   },
   "devDependencies": {
